@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'hz2py'
+
+puts Hz2py.do(ARGV.join(" "))

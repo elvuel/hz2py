@@ -1,0 +1,44 @@
+== Ruby汉字转拼音Chinese Pinyin conversion
+	
+	Chinese Pinyin conversion. 汉字转拼音 => Elvuel::Hz2py
+	
+	Chinese traditional and simplified conversion. 繁简转换 => Elvuel::TraditionalAndSimplified
+
+== Install
+
+	gem install hz2py
+
+== In rails
+
+	As GEM	
+	
+		rails3: gem 'hz2py'
+		rails2: config.gem 'hz2py'
+		
+	As PLUGIN 
+		
+		rails3: rails plugin install git://github.com/elvuel/hz2py.git
+		rails2: ./script/plugin install git://github.com/elvuel/hz2py.git
+
+	
+== Usage & Example
+	
+	# in rails app add config/initializers/hz2py.rb
+	 	class String
+	 		def to_pinyin
+	 			Hz2py.do(self)
+	 		end
+	 	end
+
+	Hz2py.do("你好") => "ni hao"
+	TraditionalAndSimplified.conv_t2s("鳳凰") => "凤凰"
+	TraditionalAndSimplified.conv_s2t("无心插柳柳成阴") => "無心插柳柳成陰"
+
+== Test
+
+	rspec spec/
+
+== Author
+
+	Elvuel(elvuel@gmail.com)
+	Copyright (c) 2010 elvuel(http://elvuel.com), released under the MIT license

@@ -1,1 +1,2 @@
-require File.join(File.dirname(__FILE__), '/lib/hz2py')
+# -*- encoding: utf-8 -*-
+require 'hz2py'

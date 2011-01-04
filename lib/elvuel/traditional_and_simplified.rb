@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module Elvuel
   # see : http://www.hao123.com/haoserver/jianfanzh.htm
   module TraditionalAndSimplified
