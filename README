@@ -1,18 +1,17 @@
-==Description
-===汉字转拼音
-Chinese Pinyin conversion. => Elvuel::Hz2Py
+== 汉字转拼音 version 0.0.1
+	Chinese Pinyin conversion. => Elvuel::Hz2Py
 
-===繁简转换
-Chinese traditional and simplified conversion. => Elvuel::TraditionalAndSimplified
+== 繁简转换
+	Chinese traditional and simplified conversion. => Elvuel::TraditionalAndSimplified
 
-==Example
+== Example
 
-Hz2Py.do("你好") => "ni hao"
-TraditionalAndSimplified.conv_t2s("鳳凰") => "凤凰"
-TraditionalAndSimplified.conv_s2t("无心插柳柳成阴") => "無心插柳柳成陰"
+	Hz2Py.do("你好") => "ni hao"
+	TraditionalAndSimplified.conv_t2s("鳳凰") => "凤凰"
+	TraditionalAndSimplified.conv_s2t("无心插柳柳成阴") => "無心插柳柳成陰"
 
-==Rspec
-spec test/hz2py_test.rb
-spec test/ts_test.rb
+== Rspec
+	spec test/hz2py_test.rb
+	spec test/ts_test.rb
 
 Copyright (c) 2010 elvuel(http://elvuel.com), released under the MIT license
