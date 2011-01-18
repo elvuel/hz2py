@@ -33,6 +33,8 @@
 	Hz2py.do("你好") => "ni hao"
 	TraditionalAndSimplified.conv_t2s("鳳凰") => "凤凰"
 	TraditionalAndSimplified.conv_s2t("无心插柳柳成阴") => "無心插柳柳成陰"
+	Hz2py.do("你好", :join_with => '-') => "ni-hao"
+	Hz2py.do("愛你", :join_with => '-', :to_simplified => true) => "ai-ni"
 
 == Test
 
