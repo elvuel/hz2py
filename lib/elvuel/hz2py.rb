@@ -459,14 +459,21 @@ module Elvuel
         "UNKNOWN"
       end
     
-      def do(s)
+      def do(s, options={})
         return "" if s.to_s.empty?
-        # According to actual requirements to decide whether to use traditional and simplified conversion(require 'traditional_and_simplified')
-        # s = TraditionalAndSimplified.conv_x2x(s)
-        delimiter = " "
+        str = s.to_s
+        delimiter = ' '
+        to_simplified = false
+        if options.is_a?(Hash)
+          delimiter = ' '
+          delimiter = options[:join_with] if options[:join_with]
+          delimiter = ' ' if delimiter.length > 1
+          to_simplified = options[:to_simplified]
+        end
+        str = ::TraditionalAndSimplified.conv_t2s(str) if to_simplified
         result = ""
         chrs = []
-        diff_uni_asc(s.to_s.strip){ |out| chrs << out }
+        diff_uni_asc(str){ |out| chrs << out }
         chrs.each_with_index do |item, index|
           if item.is_a? Array
             utf8chr = item.collect { |n| n.to_s(16) }.join("")
@@ -478,6 +485,7 @@ module Elvuel
             result << item.chr
           end
         end
+        result[-1] = "" if result[-1].chr == delimiter
         result.strip
       end
       
