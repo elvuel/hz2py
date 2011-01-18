@@ -37,5 +37,16 @@ describe "Simplified Chinese(简体中文) characters into Chinese pinyin." do
   it "mix all" do
     Hz2py.do("釹ｋelv魜瀦汉字,English有意义瀦綉＄").should == "UNKNOWN kelv UNKNOWN UNKNOWN han zi ,English you yi yi UNKNOWN UNKNOWN $"
   end
+
+  it "with specify delimiter" do
+    Hz2py.do("你好", :join_with => '-').should == "ni-hao"
+    Hz2py.do("你好").should == "ni hao"
+    Hz2py.do("黑空寻光", :join_with => '|').should == "hei|kong|xun|guang"
+  end
+
+  it "with Chinese Traditional to Simplified" do
+    Hz2py.do("你好愛", :join_with => '-', :to_simplified => true).should == "ni-hao-ai"
+    Hz2py.do("擔你檳好", :join_with => ' ', :to_simplified => true).should == "dan ni bing hao"
+  end
   
 end
