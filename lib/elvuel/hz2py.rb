@@ -458,7 +458,7 @@ module Elvuel
         @@dic.each do |k,v|
           return k if v.index u
         end
-        u
+        "UNKNOWN"
       end
     
       def do(s, options={})
