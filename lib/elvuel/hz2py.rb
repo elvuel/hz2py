@@ -196,12 +196,12 @@ module Elvuel
     	'mo' => %w( 6478 6479 8611 6a21 819c 78e8 6469 9b54 62b9 672b 83ab 58a8 9ed8 6cab 6f20 5bde 964c 8c1f 8309 84e6 998d 5aeb 9546 79e3 763c 8031 87c6 8c8a 8c98 ),
     	'mou' => %w( 8c0b 725f 67d0 53b6 54de 5a7a 7738 936a ),
     	'mu' => %w( 62c7 7261 4ea9 59c6 6bcd 5893 66ae 5e55 52df 6155 6728 76ee 7766 7267 7a46 4eeb 82dc 5452 6c90 6bea 94bc ),
-    	'na' => %w( 62ff 54ea 5450 94a0 90a3 5a1c 7eb3 5185 637a 80ad 954e 8872 7bac ),
+    	'na' => %w( 62ff 54ea 5450 94a0 90a3 5a1c 7eb3 637a 80ad 954e 8872 7bac ),
     	'nai' => %w( 6c16 4e43 5976 8010 5948 9f10 827f 8418 67f0 ),
     	'nan' => %w( 5357 7537 96be 56ca 5583 56e1 6960 8169 877b 8d67 ),
     	'nao' => %w( 6320 8111 607c 95f9 5b6c 57b4 7331 7459 7847 94d9 86f2 ),
     	'ne' => %w( 6dd6 5462 8bb7 ),
-    	'nei' => %w( 9981 ),
+    	'nei' => %w( 9981 5185 ),
     	'nen' => %w( 5ae9 80fd 6798 6041 ),
     	'ni' => %w( 59ae 9713 502a 6ce5 5c3c 62df 4f60 533f 817b 9006 6eba 4f32 576d 730a 6029 6ee0 6635 65ce 7962 615d 7768 94cc 9cb5 ),
     	'nian' => %w( 852b 62c8 5e74 78be 64b5 637b 5ff5 5eff 8f87 9ecf 9c87 9cb6 ),
@@ -215,8 +215,7 @@ module Elvuel
     	'nu' => %w( 5974 52aa 6012 5476 5e11 5f29 80ec 5b65 9a7d ),
     	'nv' => %w( 5973 6067 9495 8844 ),
     	'nuan' => %w( 6696 ),
-    	'nuenue' => %w( 8650 ),
-    	'nue' => %w( 759f 8c11 ),
+    	'nue' => %w( 8650 759f 8c11 ),
     	'nuo' => %w( 632a 61e6 7cef 8bfa 50a9 6426 558f 9518 ),
     	'ou' => %w( 54e6 6b27 9e25 6bb4 85d5 5455 5076 6ca4 6004 74ef 8026 ),
     	'pa' => %w( 556a 8db4 722c 5e15 6015 7436 8469 7b62 ),
@@ -253,8 +252,8 @@ module Elvuel
     	'ran' => %w( 7136 71c3 5189 67d3 82d2 9aef ),
     	'rang' => %w( 74e4 58e4 6518 56b7 8ba9 79b3 7a70 ),
     	'rao' => %w( 9976 6270 7ed5 835b 5a06 6861 ),
-    	'ruo' => %w( 60f9 82e5 5f31 ),
-    	're' => %w( 70ed 504c ),
+    	'ruo' => %w( 60f9 82e5 5f31 504c ),
+    	're' => %w( 70ed ),
     	'ren' => %w( 58ec 4ec1 4eba 5fcd 97e7 4efb 8ba4 5203 598a 7eab 4ede 834f 845a 996a 8f6b 7a14 887d ),
     	'reng' => %w( 6254 4ecd ),
     	'ri' => %w( 65e5 ),
@@ -412,46 +411,6 @@ module Elvuel
   module Hz2py
     
     class << self
-      def diff_uni_asc(s)
-        return "" unless block_given?
-        str = s.gsub(/#{@@sbc_hash.keys.join("|")}/){ |c| @@sbc_hash[c] }
-        bytes = str.each_byte.collect{|b| b }
-        while bytes.length > 0
-          num = bytes[0]
-          if (num >= 224 and num <= 239) or (num >= 128 and num <= 191)
-            yield bytes[0..2]
-            # u 3 times
-            bytes.shift
-            bytes.shift
-            bytes.shift
-          else
-            yield bytes[0]
-            bytes.shift
-          end
-        end
-      end
-
-      def utf8_to_unicode(utf8chr)
-        bins = utf8chr.to_i(16).to_s(2)
-        s1, s2, s3 = bins[0..7], bins[8..15], bins[16..23]
-        s1, s2, s3 = s1[4..7], s2[2..7], s3[2..7]
-        result = s1 + s2 + s3
-        while result[0].chr == "0"
-          result = result[1..result.length]
-        end
-        result.to_i(2).to_s(16)
-      end
-    
-      def unicode_to_utf8(unichr)
-        bins = unichr.to_i(16).to_s(2)
-        (16 - bins.length).times{ bins = "0" + bins }
-        s1 = "1110" + bins[0..3]
-        s2 = "10" + bins[4..9]
-        s3 = "10" + bins[10..15]
-        result = s1 + s2 + s3
-        result.to_i(2).to_s(16)
-      end
-
       def fetch_py(u)
         @@dic.each do |k,v|
           return k if v.index u
@@ -461,35 +420,45 @@ module Elvuel
     
       def do(s, options={})
         return "" if s.to_s.empty?
-        str = s.to_s
+        str = s.to_s.strip
         delimiter = ' '
         to_simplified = false
         if options.is_a?(Hash)
-          delimiter = ' '
-          delimiter = options[:join_with] if options[:join_with]
+          delimiter = options[:join_with] || ' '
           delimiter = ' ' if delimiter.length > 1
           to_simplified = options[:to_simplified]
         end
-        str = ::TraditionalAndSimplified.conv_t2s(str) if to_simplified
-        result = ""
-        chrs = []
-        diff_uni_asc(str){ |out| chrs << out }
-        chrs.each_with_index do |item, index|
-          if item.is_a? Array
-            utf8chr = item.collect { |n| n.to_s(16) }.join("")
-            uni_hex = utf8_to_unicode(utf8chr)
-            result << delimiter if chrs[index-1].is_a?(Fixnum) if index >= 1
-            result << fetch_py(uni_hex)
-            result << delimiter
+        str = TraditionalAndSimplified.conv_t2s(str) if to_simplified
+        str.gsub!(/#{@@sbc_hash.keys.join("|")}/){ |c| @@sbc_hash[c] }
+        utf8_chrs = str.unpack("U*")
+        chrs_size = utf8_chrs.size
+        result = utf8_chrs.each_with_index.collect do |num, index|
+          if num > 255
+            py = ""
+            if index == 0
+              py << fetch_py(num.to_s(16))
+              unless (index + 1) >= chrs_size
+                py << delimiter if utf8_chrs[index+1] <= 255
+              end
+            elsif index == chrs_size - 1
+               py << delimiter
+               py << fetch_py(num.to_s(16))
+            else
+              py << delimiter
+              py << fetch_py(num.to_s(16))
+              unless (index + 1) >= chrs_size
+                py << delimiter if utf8_chrs[index+1] <= 255
+              end
+            end
+            py
           else
-            result << item.chr
-          end
-        end
-        result[-1] = "" if result[-1].chr == delimiter
+            num.chr
+          end # if num
+        end.join
         result.strip
-      end
-      
-    end
+      end # do
+
+    end # module function
     
-  end
-end
+  end # Hz2py
+end # Elvuel
